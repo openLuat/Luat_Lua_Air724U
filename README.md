@@ -33,6 +33,7 @@ Air724U Lua语言项目, 源码开放, 自由扩展!! 支持 合宙4G cat.1系�
 * [合宙官网](http://www.openluat.com)
 * [合宙商城](http://m.openluat.com) 模块,开发板,外设,均有销售
 * [Lua版本LittleVGL开发介绍](http://doc.openluat.com/article/1246/0)
+* [Air724UG模块自带蓝牙Lua开发指南](http://doc.openluat.com/article/1598/0)
 
 ## 授权协议
 
