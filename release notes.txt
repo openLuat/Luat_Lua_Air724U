@@ -1,3 +1,23 @@
+发布时间：2020/11/23
+修改记录：
+	一、core V24版本修改记录：
+		1,优化网络问题
+		2，支持DES3加密，解密接口
+		3，spi dma模式挂测外部flash，概率读写失败导致lua卡主问题
+		4，linux上usb识别完后加载rndis驱动会上不了网
+		5，解决挂测过程中ssl死机问题
+		6，vbat电压发生变化时，rtos.MSG_PMD消息不会上报
+		7，在CEREG=2，并且开启工程模式下，大于1047之后的版本改为只有status发生改变才会上报，小区变化不再上报，与AT手册不符
+		8，通过pmd.ldoset接口设置背光，通过pmd.LDO_VBACKLIGHT_R，pmd.LDO_VBACKLIGHT_G,pmd.LDO_VBACKLIGHT_B设置背光
+		9，添加Socket Options参数设置接口sock_setopt,lua通过设置opt实现保活功能
+		10，扩展rtos.poweroff(type)接口增加type参数，传1进入关机充电状态
+		11，添加des_encrypt和des_decrypt接口
+		12，添加AT*USB=HOTPLUG,0/1
+		13，当ssl服务器主动断开会导致死锁
+	二、lib修改记录：
+		1、增加audio.setChannel(0)
+		2、修正新版本luatools加密导致nvm运行异常的问题
+
 发布时间：2020/09/23
 修改记录：
 	一、core V21版本修改记录：

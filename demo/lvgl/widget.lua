@@ -10,7 +10,7 @@ require "slider"
 require "style"
 require "ba"
 
-scrs = {canvas.create, ba.create, page.create, slider.create, style.create}
+scrs = {canvas.create, ba.create, anim.create, page.create, list.create, cb.create, win.create, slider.create, style.create}
 
 local function empty()
 	c = lvgl.cont_create(nil, nil)

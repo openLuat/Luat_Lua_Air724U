@@ -174,7 +174,7 @@ end
 
 --- 初始化参数存储模块
 -- @string defaultCfgFile 默认配置文件名
--- @boolean burnSave 本地烧录是否保留已有参数，true为保留，false或者nil为清除
+-- @bool burnSave 本地烧录是否保留已有参数，true为保留，false或者nil为清除
 -- @return nil
 -- @usage nvm.init("config.lua")
 function init(defaultCfgFile,burnSave)
