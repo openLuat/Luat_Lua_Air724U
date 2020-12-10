@@ -5,7 +5,7 @@
 Air724U Lua语言项目, 源码开放, 自由扩展!! 支持 合宙4G cat.1系列模块, 性能卓越!
 
 ### CORE
-![](https://images.gitee.com/uploads/images/2020/0927/103909_b925ac14_1221708.png "lua.png")
+![](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20201210165753079_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20201210160607.png "lua.png")
 
 ### LittleVGL
 ![](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20200807131012759_lvgl.gif)
