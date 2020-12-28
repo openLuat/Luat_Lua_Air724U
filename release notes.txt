@@ -1,3 +1,15 @@
+发布时间：2020/12/28
+修改记录：
+	一、core V3024版本修改记录：
+		1，修改rtos.tick获取系统tick接口,修改前关机tick不会清零，现在改成关机后清0
+		2，修改关机后再开机系统时间不对问题
+		3，修改pmd.init初始化后，充电功能为使能，导致获取电压信息不准问题
+		4，修改SD mount/umount，3次后必现死机
+		5，修改sd卡 format失败问题
+		6，优化adc.open接口，增加scale可选参数，用来增加ADC的精度
+		7，增加I2C1和I2C3的支持
+		8，增加DES3加密接口crypto.des3_encrypt，解密接口crypto.des3_decrypt
+		9，增加Luat_V30XX_RDA8910_BT_FLOAT蓝牙版本支持sd卡
 发布时间：2020/11/23
 修改记录：
 	一、core V24版本修改记录：
