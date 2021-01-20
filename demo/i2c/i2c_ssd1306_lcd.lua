@@ -7,7 +7,10 @@
 
 module(..., package.seeall)
 
-local i2cid = 0
+
+-- i2cid 1,2,3对应硬件的I2C1,I2C2,I2C3
+-- 之前的i2cid为0不再使用
+local i2cid = 2
 
 local i2cslaveaddr = 0x3c
 --注意：此处的i2cslaveaddr是7bit地址

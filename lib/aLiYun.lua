@@ -14,10 +14,12 @@ module(..., package.seeall)
 
 local sProductKey,sProductSecret,sGetDeviceNameFnc,sGetDeviceSecretFnc,sSetDeviceSecretFnc
 local sRegion = "cn-shanghai"
+--实例ID，根据此ID来判断是否需要一型一密免预注册认证
+local sInstanceId
 --连接方式
-local sConnectMode,sConnectHost,sConnectPort,sGetClientIdFnc
+local sConnectMode,sConnectHost,sConnectPort,sGetClientIdFnc,sGetUserNameFnc,sGetPasswordFnc
 local sKeepAlive,sCleanSession,sWill
-local isSleep--休眠，不去重连服务器
+local  isSleep = false--休眠，不去重连服务器
 local sErrHandleCo,sErrHandleCb,sErrHandleTmout
 
 local outQueue =
@@ -277,19 +279,80 @@ function clientAuthTask()
     end
 end
 
-local function clientDirectTask()
-    while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
-    local tm=os.time()
+local function directProc()
     local clientId = (sGetClientIdFnc and sGetClientIdFnc() or sGetDeviceNameFnc()).."|securemode=3,timestamp=2524608000000,signmethod=hmacsha1|"
-    local userName = sGetDeviceNameFnc().."&"..sProductKey
+    local userName = sGetUserNameFnc and sGetUserNameFnc() or (sGetDeviceNameFnc().."&"..sProductKey)
     
-    local content = "clientId"..(sGetClientIdFnc and sGetClientIdFnc() or sGetDeviceNameFnc()).."deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey.."timestamp2524608000000"
-    local signKey= sGetDeviceSecretFnc()        
-    local password = crypto.hmac_sha1(content,content:len(),signKey,signKey:len())
+    local password
     
-    log.info("aLiYun.clientDirectTask",clientId,userName,password)
+    if sGetPasswordFnc then
+        password = sGetPasswordFnc()
+    else
+        local content = "clientId"..(sGetClientIdFnc and sGetClientIdFnc() or sGetDeviceNameFnc()).."deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey.."timestamp2524608000000"
+        local signKey= sGetDeviceSecretFnc()        
+        password = crypto.hmac_sha1(content,content:len(),signKey,signKey:len())
+    end
+    
+    log.info("aLiYun.directProc",clientId,userName,password)
     
     sys.taskInit(clientDataTask,sConnectHost or (sProductKey..".iot-as-mqtt."..sRegion..".aliyuncs.com"),{sConnectPort},clientId,userName,password)
+end
+
+local function clientDirectTask()
+    while not socket.isReady() do sys.waitUntil("IP_READY_IND") end
+    
+    local tm=os.time()
+    
+    --一机一密
+    if sProductSecret==nil then
+        directProc()
+    --一型一密
+    else
+        local clientId
+        --预注册
+        if sInstanceId==nil then
+            clientId = (sGetClientIdFnc and sGetClientIdFnc() or sGetDeviceNameFnc()).."|securemode=2,authType=register,random="..tm..",signmethod=hmacsha1|"            
+        --免预注册
+        else
+            clientId = (sGetClientIdFnc and sGetClientIdFnc() or sGetDeviceNameFnc()).."|securemode=-2,authType=regnwl,random="..tm..",signmethod=hmacsha1,instanceId="..sInstanceId.."|"
+        end
+        
+        local userName = sGetUserNameFnc and sGetUserNameFnc() or (sGetDeviceNameFnc().."&"..sProductKey)
+            
+        local content = "deviceName"..sGetDeviceNameFnc().."productKey"..sProductKey.."random"..tm
+        local signKey= sProductSecret       
+        local password = crypto.hmac_sha1(content,content:len(),signKey,signKey:len())
+        
+        
+        while true do
+            local mqttClient = mqtt.client(clientId,sKeepAlive or 240,userName,password)
+            
+            local r,ack = mqttClient:connect(sConnectHost,sConnectPort,"tcp_ssl")
+            if r then
+                local result,data = mqttClient:receive(60000)
+                --接收到数据
+                if result then
+                    log.info("aLiYun.clientDirectTask register rsp",data.topic,data.payload)
+                    local tJsonDecode,res = json.decode(data.payload)
+                    if res and tJsonDecode["deviceName"] and tJsonDecode["deviceSecret"] then
+                        sSetDeviceSecretFnc(tJsonDecode["deviceSecret"])
+                        sys.wait(1000)
+                        mqttClient:disconnect()
+                        directProc()
+                        break
+                    end
+                end
+            end
+            
+            mqttClient:disconnect()
+            if ack==4 then
+                directProc()
+                break
+            else
+                sys.wait(5000)
+            end
+        end
+    end
 end
 
 --- 配置阿里云物联网套件的产品信息和设备信息
@@ -297,7 +360,6 @@ end
 -- @string[opt=nil] productSecret，产品密钥
 -- 一机一密认证方案时，此参数传入nil
 -- 一型一密认证方案时，此参数传入真实的产品密钥
--- MQTT-TCP直连方案时，此参数传入nil
 -- @function getDeviceNameFnc，获取设备名称的函数
 -- @function getDeviceSecretFnc，获取设备密钥的函数
 -- @function[opt=nil] setDeviceSecretFnc，设置设备密钥的函数，一型一密认证方案才需要此参数
@@ -339,25 +401,38 @@ function setRegion(region)
     sRegion = region
 end
 
+-- 设置企业版实例id
+-- @string id，企业版实例id
+-- @return nil
+-- @usage
+-- aLiYun.setInstanceId(iot-060a1234")
+function setInstanceId(id)
+    sInstanceId = id
+end
+
 --- 设置连接方式
 -- @string mode，连接方式，支持如下几种方式：
 --                         "direct"表示MQTT-TCP直连
 -- @string host，服务器地址
 -- @number port，服务器端口
 -- @function getClientIdFnc，获取mqtt client id的函数
+-- @function getUserNameFnc，获取mqtt client userName的函数
+-- @function getPasswordFnc，获取mqtt client password的函数
 -- @return nil
 -- @usage
 -- 设置为MQTT-TCP直连：aLiYun.setConnectMode("direct")
-function setConnectMode(mode,host,port,getClientIdFnc)
+function setConnectMode(mode,host,port,getClientIdFnc,getUserNameFnc,getPasswordFnc)
     sConnectMode = mode
     sConnectHost = host
     sConnectPort = port or 1883
     sGetClientIdFnc = getClientIdFnc
+    sGetUserNameFnc = getUserNameFnc
+    sGetPasswordFnc = getPasswordFnc
 end
 
 --- 订阅主题
 -- @param topic，string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码
--- @param qos，number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil
+-- @param qos，number或者nil，topic为一个主题时，qos为number类型(0/1，默认0)；topic为多个主题时，qos为nil
 -- @return nil
 -- @usage
 -- aLiYun.subscribe("/b0FMK1Ga5cp/862991234567890/get", 0)
@@ -370,7 +445,7 @@ end
 --- 发布一条消息
 -- @string topic，UTF8编码的主题
 -- @string payload，负载
--- @number[opt=0] qos，质量等级，0/1/2，默认0
+-- @number[opt=0] qos，质量等级，0/1，默认0
 -- @function[opt=nil] cbFnc，消息发布结果的回调函数
 -- 回调函数的调用形式为：cbFnc(result,cbPara)。result为true表示发布成功，false或者nil表示订阅失败；cbPara为本接口中的第5个参数
 -- @param[opt=nil] cbPara，消息发布结果回调函数的回调参数
@@ -394,9 +469,10 @@ end
 -- 当evt为"auth"时，cbFnc的调用形式为：cbFnc(result)，result为true表示认证成功，false或者nil表示认证失败
 -- 当evt为"connect"时，cbFnc的调用形式为：cbFnc(result)，result为true表示连接成功，false或者nil表示连接失败
 -- 当evt为"receive"时，cbFnc的调用形式为：cbFnc(topic,qos,payload)，topic为UTF8编码的主题(string类型)，qos为质量等级(number类型)，payload为原始编码的负载(string类型)
+-- 当evt为"reconnect"时，cbFnc的调用形式为：cbFnc()，表示lib中在自动重连阿里云服务器
 -- @return nil
 -- @usage
--- aLiYun.on("b0FMK1Ga5cp",nil,getDeviceNameFnc,getDeviceSecretFnc)
+-- aLiYun.on("connect",cbFnc)
 function on(evt,cbFnc)
 	evtCb[evt] = cbFnc
 end
@@ -414,7 +490,9 @@ function setErrHandle(cbFnc,tmout)
         sErrHandleCo = sys.taskInit(function()
             while true do
                 if sys.wait(sErrHandleTmout*1000) == nil then
-                    sErrHandleCb()
+                    if not isSleep then
+                        sErrHandleCb()
+                    end
                 end
             end
         end)

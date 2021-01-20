@@ -1,4 +1,11 @@
 --- 模块功能：GPS模块管理
+-- 注意：此功能模块中的功能接口可以分为四大类：
+-- 1、GPS开启
+-- 2、GPS关闭
+-- 3、GPS定位数据读取
+-- 4、GPS参数和功能设置
+-- 1、2、3是通用功能，除了支持合宙的Air530Z和Air82X系列模块，理论上也支持其他厂家的串口GPS模块
+-- 4是专用功能，仅支持合宙的Air530Z和Air82X系列模块
 -- @module gpsZkw
 -- @author openLuat
 -- @license MIT
@@ -14,7 +21,7 @@ local smatch,sfind,slen,ssub,sbyte,sformat,srep = string.match,string.find,strin
 local openFlag
 --GPS定位标志，"2D"表示2D定位，"3D"表示3D定位，其余表示未定位
 --GPS定位标志，true表示，其余表示未定位
-local fixFlag
+local fixFlag,fixOnece=nil,nil
 --GPS定位成功后，过滤掉前filterSeconds秒的经纬度信息
 --是否已经过滤完成
 local filterSeconds,filteredFlag = 0
@@ -61,6 +68,8 @@ local nmeaInterval = 1000
 --8，自动低功耗模式，可以通过串口唤醒
 --9, 自动超低功耗跟踪模式，需要force on来唤醒
 local runMode = 0
+--gps 的串口线程是否在工作；
+local taskFlag=false
 --runMode为1或者2时，GPS运行状态和休眠状态的时长
 local runTime,sleepTime
 
@@ -125,7 +134,7 @@ local function getstrength(sg)
 end
 
 local function filterTimerFnc()
-    log.info("gps.filterTimerFnc end")
+    log.info("gpsZkw.filterTimerFnc end")
     filteredFlag = true
 end
 
@@ -147,7 +156,7 @@ local function parseNmea(s)
     if smatch(s,"GGA") then
         lat,latTyp,lng,lngTyp,gpsFind,locSateCnt,hdp,altd,sep = smatch(s,"GGA,%d+%.%d+,(%d+%.%d+),([NS]),(%d+%.%d+),([EW]),(%d),(%d+),([%d%.]*),(.*),M,(.*),M")
         if (gpsFind=="1" or gpsFind=="2" or gpsFind=="4") and altd then
-            fixed = true
+            --fixed = true
             altitude = altd
             latitudeType,longitudeType,latitude,longitude = latTyp,lngTyp,lat,lng
             usedSateCnt = locSateCnt
@@ -187,7 +196,7 @@ local function parseNmea(s)
     
     if filterSeconds>0 and fixed and not fixFlag and not filteredFlag then
         if not sys.timerIsActive(filterTimerFnc) then
-            log.info("gps.filterTimerFnc begin")
+            log.info("gpsZkw.filterTimerFnc begin")
             sys.publish("GPS_STATE","LOCATION_FILTER")
             sys.timerStart(filterTimerFnc,filterSeconds*1000)
         end        
@@ -198,6 +207,7 @@ local function parseNmea(s)
     if fixed then
         if not fixFlag then
             fixFlag,filteredFlag = true,true
+            fixOnece=true
             fixFailCnt = 0
             sys.publish("GPS_STATE","LOCATION_SUCCESS")
         end
@@ -217,7 +227,10 @@ local function taskRead()
     local cacheData = ""
     local co = coroutine.running()
     while true do
-        local s = uart.read(uartID, "*l")
+        local s =""
+        if openFlag then
+           s= uart.read(uartID, "*l")
+        end
         if s == "" then
             uart.on(uartID,"receive",function() coroutine.resume(co) end)
             coroutine.yield()
@@ -300,7 +313,10 @@ local function _open()
     if openFlag then return end
     pm.wake("gps.lua")
     uart.setup(uartID,uartBaudrate,uartDatabits,uartParity,uartStopbits)
-    sys.taskInit(taskRead)
+    if not taskFlag then 
+         taskFlag =true
+         sys.taskInit(taskRead)
+    end
     if powerCbFnc then
         powerCbFnc(true)
     else
@@ -311,7 +327,7 @@ local function _open()
     sys.publish("GPS_STATE","OPEN")
     fixFlag,filteredFlag = false
     Ggalng,Ggalat,Gsv,Sep = "","",""    
-    log.info("gps._open")
+    log.info("gpsZkw._open")
 end
 
 local function _close()
@@ -330,7 +346,7 @@ local function _close()
     sys.timerStop(filterTimerFnc)
     Ggalng,Ggalat,Gsv,Sep = "","",""
     aerialModeSetted,runModeSetted,nmeaReportSetted,nmeaReportFreqSetted = nil
-    log.info("gps._close")
+    log.info("gpsZkw._close")
 end
 
 
@@ -418,7 +434,7 @@ end
 local function timerFnc()
     for i=1,#tList do
         if tList[i].flag then
-            log.info("gps.timerFnc@"..i,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay)
+            log.info("gpsZkw.timerFnc@"..i,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay)
             local rmn,dly,md,cb = tList[i].para.remain,tList[i].para.delay,tList[i].mode,tList[i].para.cb
 
             if rmn and rmn>0 then
@@ -465,7 +481,7 @@ local function statInd(evt)
     --定位成功的消息
     if evt == "LOCATION_SUCCESS" then
         for i=1,#tList do
-            log.info("gps.statInd@"..i,tList[i].flag,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay,tList[i].para.cb)
+            log.info("gpsZkw.statInd@"..i,tList[i].flag,tList[i].mode,tList[i].para.tag,tList[i].para.val,tList[i].para.remain,tList[i].para.delay,tList[i].para.cb)
             if tList[i].flag then
                 if tList[i].mode ~= TIMER then
                     tList[i].para.delay = 1
@@ -504,7 +520,7 @@ end
 -- @see DEFAULT,TIMERORSUC,TIMER
 function open(mode,para)
     assert((para and type(para) == "table" and para.tag and type(para.tag) == "string"),"gps.open para invalid")
-    log.info("gps.open",mode,para.tag,para.val,para.cb)
+    log.info("gpsZkw.open",mode,para.tag,para.val,para.cb)
     --如果GPS定位成功
     if isFix() then
         if mode~=TIMER then
@@ -537,7 +553,7 @@ end
 -- @see open,DEFAULT,TIMERORSUC,TIMER
 function close(mode,para)
     assert((para and type(para)=="table" and para.tag and type(para.tag)=="string"),"gps.close para invalid")
-    log.info("gps.close",mode,para.tag,para.val,para.cb)
+    log.info("gpsZkw.close",mode,para.tag,para.val,para.cb)
     --删除此“GPS应用”
     delItem(mode,para)
     local valid,i
@@ -714,6 +730,13 @@ end
 -- @usage gps.isFix()
 function isFix()
     return fixFlag
+end
+
+--- 获取GPS模块是否首次定位成功过
+-- @return bool result，true表示曾经定位成功
+-- @usage gps.isOnece()
+function isOnece()
+    return fixOnece
 end
 
 -- 度分格式转换为度格式

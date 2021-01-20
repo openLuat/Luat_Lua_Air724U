@@ -25,7 +25,7 @@ NetMode_LTE=     4--4G
 NetMode_WCDMA=   5--3G
 local netMode = NetMode_noNet
 
---GSM网络状态：
+--网络状态：
 --INIT：开机初始化中的状态
 --REGISTERED：注册上GSM网络
 --UNREGISTER：未注册上GSM网络
@@ -65,23 +65,47 @@ end
 local function creg(data)
     local p1, s,act
     local prefix = (netMode == NetMode_LTE) and "+CEREG: " or (netMode == NetMode_noNet and "+CREG: " or "+CGREG: ")
-    log.info("net.creg",netMode,prefix)
+    log.info("net.creg1",netMode,prefix)
     if not data:match(prefix) then
-        log.warn("net.creg","no match",data)
-        return
+        --log.info("net.creg2",prefix)
+        if prefix=="+CREG: " then
+            --log.info("net.creg3")
+            prefix = "+CGREG: "
+            if not data:match("+CGREG: ") then
+                log.warn("net.creg1","no match",data)
+                return
+            end
+        elseif prefix=="+CGREG: " then
+            --log.info("net.creg4")
+            prefix = "+CREG: "
+            if not data:match("+CREG: ") then
+                log.warn("net.creg2","no match",data)
+                return
+            end
+        end        
     end
     --获取注册状态
     _, _, p1 = data:find(prefix .. "%d,(%d+)")
+    --log.info("net.creg5",p1 == nil)
     if p1 == nil then
         _, _, p1 = data:find(prefix .. "(%d+)")
+        --log.info("net.creg6",p1 == nil)
         if p1 == nil then return end
         act = data:match(prefix .. "%d+,.-,.-,(%d+)")
     else
         act = data:match(prefix .. "%d,%d+,.-,.-,(%d+)")
     end
+    
+    log.info("net.creg7",p1,act)
 
     --设置注册状态
     s = (p1=="1" or p1=="5") and "REGISTERED" or "UNREGISTER"
+    
+    --log.info("net.creg8",s,state)
+    if prefix=="+CGREG: " and s=="UNREGISTER" then
+        log.info("net.creg9 ignore!!!")
+        return
+    end
     --注册状态发生了改变
     if s ~= state then
         --临近小区查询处理
@@ -431,6 +455,9 @@ local function neturc(data, prefix)
 end
 
 --- 设置飞行模式
+-- 注意：如果要测试飞行模式的功耗，开机后不要立即调用此接口进入飞行模式
+-- 在模块注册上网络之前，调用此接口进入飞行模式不仅无效，还会导致功耗数据异常
+-- 详情参考：http://doc.openluat.com/article/488/0
 -- @bool mode，true:飞行模式开，false:飞行模式关
 -- @return nil
 -- @usage net.switchFly(mode)
@@ -464,7 +491,7 @@ function getNetMode()
 	return netMode
 end
 
---- 获取GSM网络注册状态
+--- 获取网络注册状态
 -- @return string state,GSM网络注册状态，
 -- "INIT"表示正在初始化
 -- "REGISTERED"表示已注册
@@ -503,13 +530,15 @@ function getCi()
 end
 
 --- 获取信号强度
+-- 当前注册的是2G网络，就是2G网络的信号强度
+-- 当前注册的是4G网络，就是4G网络的信号强度
 -- @return number rssi,当前信号强度(取值范围0-31)
 -- @usage net.getRssi()
 function getRssi()
 	return rssi
 end
 
---- 信号接收功率
+--- 4G网络信号接收功率
 -- @return number rsrp,当前信号接收功率(取值范围-140 - -40)
 -- @usage net.getRsrp()
 function getRsrp()
