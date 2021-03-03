@@ -102,10 +102,10 @@ function waitUntilExt(id, ms)
     return false
 end
 
---- 创建一个任务线程,在模块最末行调用该函数并注册模块中的任务函数，main.lua导入该模块即可
--- @param fun 任务函数名，用于resume唤醒时调用
--- @param ... 任务函数fun的可变参数
--- @return co  返回该任务的线程号
+--- 创建一个任务并且运行该任务
+-- @param fun 任务主函数，激活task时使用
+-- @param ... 任务主函数fun的可变参数
+-- @return co  返回该任务的线程ID
 -- @usage sys.taskInit(task1,'a','b')
 function taskInit(fun, ...)
     local co = coroutine.create(fun)
