@@ -4,6 +4,9 @@
 
 Air724U Lua语言项目, 源码开放, 自由扩展!! 支持 合宙4G cat.1系列模块, 性能卓越!
 
+**特别说明:**
+ _正式版本以 [官网](http://doc.openluat.com/article/1334/0#13core_66)为准，此处存放beta版本_  
+
 ### CORE
 ![](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20201212174959751_QQ%E5%9B%BE%E7%89%8720201212174707.png "lua.png")
 
