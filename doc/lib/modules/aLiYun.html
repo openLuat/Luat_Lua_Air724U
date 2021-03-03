@@ -41,13 +41,16 @@
   <li><strong>aLiYun</strong></li>
   <li><a href="../modules/aLiYunOta.html">aLiYunOta</a></li>
   <li><a href="../modules/agps.html">agps</a></li>
+  <li><a href="../modules/agpsZkw.html">agpsZkw</a></li>
   <li><a href="../modules/audio.html">audio</a></li>
   <li><a href="../modules/cc.html">cc</a></li>
   <li><a href="../modules/clib.html">clib</a></li>
   <li><a href="../modules/common.html">common</a></li>
   <li><a href="../modules/console.html">console</a></li>
   <li><a href="../modules/errDump.html">errDump</a></li>
+  <li><a href="../modules/ftp.html">ftp</a></li>
   <li><a href="../modules/gps.html">gps</a></li>
+  <li><a href="../modules/gpsZkw.html">gpsZkw</a></li>
   <li><a href="../modules/http.html">http</a></li>
   <li><a href="../modules/lbsLoc.html">lbsLoc</a></li>
   <li><a href="../modules/led.html">led</a></li>
@@ -127,6 +130,18 @@
     setMqtt (<strong  style="color: gray;">[cleanSession=1]</strong><strong  style="color: gray;">[, will=nil]</strong><strong  style="color: gray;">[, keepAlive=240]</strong>)
     </a></td>
 	<td class="summary">设置MQTT数据通道的参数</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setRegion">
+    setRegion (region)
+    </a></td>
+	<td class="summary">设置地域region id</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setConnectMode">
+    setConnectMode (mode, host, port, getClientIdFnc, getUserNameFnc, getPasswordFnc)
+    </a></td>
+	<td class="summary">设置连接方式</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#subscribe">
@@ -335,6 +350,93 @@ aLiYun.setMqtt(<span class="number">1</span>,{qos=<span class="number">0</span>,
 
 </dd>
     <dt>
+    <a name = "setRegion"></a>
+    <strong  style="color: red;">
+    setRegion (region)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置地域region id</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">region</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">地域id字符串，参考：https://help.aliyun.com/document_detail/40654.html?spm=a2c4g.11186623.2.16.c0a63f82Z7qCtA#concept-h4v-j5k-xdb</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">设置华北<span class="number">1</span>：aLiYun.setRegion(<span class="string">"cn-qingdao"</span>)
+设置华东<span class="number">1</span>：aLiYun.setRegion(<span class="string">"cn-hangzhou"</span>)
+设置华南<span class="number">1</span>：aLiYun.setRegion(<span class="string">"cn-shenzhen"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "setConnectMode"></a>
+    <strong  style="color: red;">
+    setConnectMode (mode, host, port, getClientIdFnc, getUserNameFnc, getPasswordFnc)
+    </strong>
+    </dt>
+    <dd>
+    <pre class="example"  style="color: red;">设置连接方式</pre>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">mode</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">连接方式，支持如下几种方式：
+                         "direct"表示MQTT-TCP直连</pre>
+        </li>
+        <li><span class="parameter">host</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <pre class="example">服务器地址</pre>
+        </li>
+        <li><span class="parameter">port</span>
+            <span class="types"><span class="type">number</span></span>
+        <pre class="example">服务器端口</pre>
+        </li>
+        <li><span class="parameter">getClientIdFnc</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">获取mqtt client id的函数</pre>
+        </li>
+        <li><span class="parameter">getUserNameFnc</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">获取mqtt client userName的函数</pre>
+        </li>
+        <li><span class="parameter">getPasswordFnc</span>
+            <span class="types"><span class="type">function</span></span>
+        <pre class="example">获取mqtt client password的函数</pre>
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ul>
+        <li>
+        <pre class="example">nil</pre></il>
+    </ul>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">设置为MQTT-TCP直连：aLiYun.setConnectMode(<span class="string">"direct"</span>)</pre></il>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "subscribe"></a>
     <strong  style="color: red;">
     subscribe (topic, qos)
@@ -350,7 +452,7 @@ aLiYun.setMqtt(<span class="number">1</span>,{qos=<span class="number">0</span>,
         <pre class="example">string或者table类型，一个主题时为string类型，多个主题时为table类型，主题内容为UTF8编码</pre>
         </li>
         <li><span class="parameter">qos</span>
-        <pre class="example">number或者nil，topic为一个主题时，qos为number类型(0/1/2，默认0)；topic为多个主题时，qos为nil</pre>
+        <pre class="example">number或者nil，topic为一个主题时，qos为number类型(0/1，默认0)；topic为多个主题时，qos为nil</pre>
         </li>
     </ul>
 
@@ -392,7 +494,7 @@ aLiYun.subscribe({[<span class="string">"/b0FMK1Ga5cp/862991234567890/get"</span
         <li><span class="parameter">qos</span>
             <span class="types"><span class="type">number</span></span>
          [<em>此参数可选，默认值为：</em> 0]
-        <pre class="example">质量等级，0/1/2，默认0</pre>
+        <pre class="example">质量等级，0/1，默认0</pre>
         </li>
         <li><span class="parameter">cbFnc</span>
             <span class="types"><span class="type">function</span></span>
@@ -438,6 +540,7 @@ aLiYun.publish(<span class="string">"/b0FMK1Ga5cp/862991234567890/update"</span>
         <pre class="example">事件
  "auth"表示鉴权服务器认证结果事件
  "connect"表示接入服务器连接结果事件
+ "reconnect"表示重连事件
  "receive"表示接收到接入服务器的消息事件</pre>
         </li>
         <li><span class="parameter">cbFnc</span>
@@ -445,7 +548,8 @@ aLiYun.publish(<span class="string">"/b0FMK1Ga5cp/862991234567890/update"</span>
         <pre class="example">事件的处理函数
  当evt为"auth"时，cbFnc的调用形式为：cbFnc(result)，result为true表示认证成功，false或者nil表示认证失败
  当evt为"connect"时，cbFnc的调用形式为：cbFnc(result)，result为true表示连接成功，false或者nil表示连接失败
- 当evt为"receive"时，cbFnc的调用形式为：cbFnc(topic,qos,payload)，topic为UTF8编码的主题(string类型)，qos为质量等级(number类型)，payload为原始编码的负载(string类型)</pre>
+ 当evt为"receive"时，cbFnc的调用形式为：cbFnc(topic,qos,payload)，topic为UTF8编码的主题(string类型)，qos为质量等级(number类型)，payload为原始编码的负载(string类型)
+ 当evt为"reconnect"时，cbFnc的调用形式为：cbFnc()，表示lib中在自动重连阿里云服务器</pre>
         </li>
     </ul>
 
@@ -459,7 +563,7 @@ aLiYun.publish(<span class="string">"/b0FMK1Ga5cp/862991234567890/update"</span>
 
     <h3>Usage:</h3>
     <ul>
-        <li><pre class="example">aLiYun.on(<span class="string">"b0FMK1Ga5cp"</span>,<span class="keyword">nil</span>,getDeviceNameFnc,getDeviceSecretFnc)</pre></il>
+        <li><pre class="example">aLiYun.on(<span class="string">"connect"</span>,cbFnc)</pre></il>
     </ul>
 
 </dd>
@@ -507,7 +611,7 @@ aLiYun.publish(<span class="string">"/b0FMK1Ga5cp/862991234567890/update"</span>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2020-05-24 23:24:09 </i>
+<i style="float:right;">Last updated 2021-01-27 10:12:38 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

@@ -1,496 +1,574 @@
-����ʱ�䣺2021/1/20
-�޸ļ�¼��
-	һ��core V3025�汾�޸ļ�¼��
-		1������Զ������lua�ű���У�鹦�ܣ���ֹ���ش���Ľű�����ģ���޷�����
-		2�����sd����SPIͬʱʹ�ø�������������
-		3���޸�����MAC��ַ��ʾ�������������������
-		4������GPIO29,30,31�ᵼ��ģ������
-		5���޸�sim���Ȳ�νӿ���Ч����
-		6��Lua_V3024�汾¼��demo�޷�ʹ��
-		7��������ģʽ�����㲥���޸Ĺ㲥���ݣ����´򿪹㲥�����������������ȡ���ظ��������������
-		8���Ż������Ų���MP3��Ƶ������������
-		9�������㲥�������ߺ�ֹͣ
-		10���޸�keypad�������������ͬʱ̧�𣬶��ж�����
-		11��AT+RNDISCALL=0,1�����²��USB��rndis������������
-		12��uart.set_rs485_oe���ӿ�ѡ����,��������485ת���ӳ�ʱ��
-		13����ؼ���ѹ��׼����
-		14��֧�ֳ�翪��
-		15��ͨ�����̲���TTS��ͨ������TTS��������
-		16���޸�fs��io�ӿڷ���ֵ���ʹ�������
-		17��sd�� fat32 formatʧ��
-	����lib �޸ļ�¼��
-		1��aLiYun��mqttֱ����ʽ�����ӻ�ȡusername��password�ĺ������ù���
-		2��aLiYun��ϵͳsleep��ʱ�򲻴����쳣��ʱ
-		3��sys����һ��task��ʹ��waitUntilѭ�����Ĳ�ͬ����Ϣ������waitUntil("1",500)��waitUntil("2",500)��...��waitUntil("n",500)�������Ƿ�������ĵ���Ϣ����������ڴ�й©������
-		4��mqtt��������subscribe���ģ�����������ʧ��ʱ�������߼��޷����ʧ�ܡ�������
-		5��aLiYun��֧�����µİ����ƹ���ʵ������ҵ��ʾ����MQTTֱ��
-		6��audio����������mic����Ľӿ� 
-		7��audio���޸�������Ƶ���ͨ���Ľӿڣ���������Ƶ����ͨ�� 
-		8��audio������Ĭ����Ƶ�������ͨ��
-		9��gpsZkw���޸�gpsZkw.lua��log.info����gps��ΪgpsZkw
-		10��path������spi.send_recv�ӿڹ��ܳ���������
-����ʱ�䣺2020/12/28
-�޸ļ�¼��
-	һ��core V3024�汾�޸ļ�¼��
-		1���޸�rtos.tick��ȡϵͳtick�ӿ�,�޸�ǰ�ػ�tick�������㣬���ڸĳɹػ�����0
-		2���޸Ĺػ����ٿ���ϵͳʱ�䲻������
-		3���޸�pmd.init��ʼ���󣬳�繦��Ϊʹ�ܣ����»�ȡ��ѹ��Ϣ��׼����
-		4���޸�SD mount/umount��3�κ��������
-		5���޸�sd�� formatʧ������
-		6���Ż�adc.open�ӿڣ�����scale��ѡ��������������ADC�ľ���
-		7������I2C1��I2C3��֧��
-		8������DES3���ܽӿ�crypto.des3_encrypt�����ܽӿ�crypto.des3_decrypt
-		9������Luat_V30XX_RDA8910_BT_FLOAT�����汾֧��sd��
-����ʱ�䣺2020/11/23
-�޸ļ�¼��
-	һ��core V24�汾�޸ļ�¼��
-		1,�Ż���������
-		2��֧��DES3���ܣ����ܽӿ�
-		3��spi dmaģʽ�Ҳ��ⲿflash�����ʶ�дʧ�ܵ���lua��������
-		4��linux��usbʶ��������rndis�������ϲ�����
-		5������Ҳ������ssl��������
-		6��vbat��ѹ�����仯ʱ��rtos.MSG_PMD��Ϣ�����ϱ�
-		7����CEREG=2�����ҿ�������ģʽ�£�����1047֮��İ汾��Ϊֻ��status�����ı�Ż��ϱ���С���仯�����ϱ�����AT�ֲ᲻��
-		8��ͨ��pmd.ldoset�ӿ����ñ��⣬ͨ��pmd.LDO_VBACKLIGHT_R��pmd.LDO_VBACKLIGHT_G,pmd.LDO_VBACKLIGHT_B���ñ���
-		9������Socket Options�������ýӿ�sock_setopt,luaͨ������optʵ�ֱ����
-		10����չrtos.poweroff(type)�ӿ�����type��������1����ػ����״̬
-		11������des_encrypt��des_decrypt�ӿ�
-		12������AT*USB=HOTPLUG,0/1
-		13����ssl�����������Ͽ��ᵼ������
-	����lib�޸ļ�¼��
-		1������audio.setChannel(0)
-		2�������°汾luatools���ܵ���nvm�����쳣������
-
-����ʱ�䣺2020/09/23
-�޸ļ�¼��
-	һ��core V21�汾�޸ļ�¼��
-		1��485����1200�����������һ�ֽڴ���
-		2��disp.getframe()�ӿ�ֻ�ܻ�ȡ��ͼƬ�Ļ��棬������Ϣ�Ļ����ȡ����
-		3��������lua������쳣
-		4��mono_std_spi_st7571.lua �޷�����ʹ��
-		5����������
-		6���͹������ô���2��ӡ��־�в�����
-		7����ʪ�ȴ�����sht30���ڿ������Ϲ���������
-		8��disp.close() ֮����ִ��disp.init ����ʾֱ������
-		9��֧��ͨ��ģ����ָ����rsa�ӽ��ܹ��ܽӿ�
-		lua���Ӷ����Ȳ�νӿ�
-	����lib�޸ļ�¼��
-		1������audio.setChannel(0)
-		2�������°汾luatools���ܵ���nvm�����쳣������
-
-����ʱ�䣺2020/09/05
-�޸ļ�¼��
-	һ��core V20�汾�޸ļ�¼��
-		1��TTS/TTS_FLOAT�汾֧��SD��
-		2��֧����lvgl����ʾ��ά�룬֧������style��֧��canvas�ؼ�
-		3��lua����820GPS������������
-		4��disp��ʾbug
-		5��TTS֧��Ӣ����ĸ����
-		6������audiocore.head_plug�ӿڣ����ö������״̬
-		7������disp.new disp.getframe�ӿ�
-		8��SSL���ӹ����У�����TTS����
-	����lib�޸ļ�¼��
-		1������littlevgl demo
-		2���Ż�lib��Ĳ���bug
-
-����ʱ�䣺2020/05/31 10:10
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.3.2
-	(1)scanCode��֧������ͷ���պ�ɨ�빦��
-	(2)record��֧����ʽ¼������
-	(3)wifiScan��֧��wifi�ȵ�ɨ�蹦��
-	(4)audio��֧��ͨ���������ڹ���
-	(5)http��������transfer-encoding���ִ�Сд���µ�chunk���������޷�����������������
-    ����demo�ű��޸�
-	(1)���ƻ���֧��camera��record��wifi��audio��call demo
-
-
-
-����ʱ�䣺2020/05/04 22:48
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.3.1
-	(1)audio.lua��������TTS�ٶ����ô��󡱵�����
-	(2)record.lua������¼������
-    ����demo�ű��޸�
-	(1)alarm����������demo
-	(2)record������¼��demo
-
-
-
-����ʱ�䣺2020/04/23 15:03
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.3.0
-	(1)audio.lua������audio.setChannel�ӿڣ�����������Ƶ���ͨ��
-
-
-
-����ʱ�䣺2020/04/11 23:43
-�޸ļ�¼��
-	lib�ű��汾�ţ�2.2.9
-	(1)֧��tts��call����
-	(2)����GPIO ldo��ѹ��Ŀ���˵��
-	(3)�޸Ŀ�����Ĭ��netLed�Ŀ��Ʒ�ʽ��ldo��ѹ��Ŀ��Ʒŵ�main.luaȥ���ƣ�����д��netLed.lua��ȥ����
-
-
-
-����ʱ�䣺2020/04/09 23:37
-�޸ļ�¼��
-	lib�ű��汾�ţ�2.2.8
-	(1)֧��ui��audio��qrcode����
-	(2)����������sim���޷����������߼���������
-	(3)����������ָʾ�Ʋ�����������
-
-
-
-����ʱ�䣺2019/11/17 08:16
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.7
-	(1)mqtt.lua��������mqtt recv��������ʱ�����������Ϣ�˳�����״̬���ᵼ��publish�����ȴ�pubackʱ���˳�����״̬������publish�����������⡾������Ҳ���ڴ����⡿
-	(2)link.lua��������2Gר������pdp����ʧ�ܡ�������
-
-
-
-����ʱ�䣺2019/10/29 10:25
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.6
-	(1)socket.lua��������socket�����ر�ʱ�����������һ��socket�����������Ե���������socket id��ͻ���Ӷ�����socketЭ���쳣������������
-
-
-
-����ʱ�䣺2019/10/22 16:02
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.5
-	(1)link.lua��������ר��������apn���޷�ע�����硱������
-	(2)socket.lua��������ͬʱ���ڶ��socket��������ʧ�ܣ�ʹ��http dns����ʱ���ᵼ�¸���������������
-
-
-
-����ʱ�䣺2019/10/09 16:02
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.4
-	(1)socket.lua����������Ѷ���http dns����ʧ�ܡ�������
-
-
-
-����ʱ�䣺2019/10/08 16:40
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.3
-	(1)link.lua���Ż�ר����apn���ù���
-	(2)link.lua���������������һ�����ӷ������������Գ�������ʧ�ܡ�������
-	(3)socket.lua��֧����Ѷ���http dns����
-
-
-
-����ʱ�䣺2019/09/04 16:17
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.2
-	(1)ril.lua��link.lua��������AT+CGDCONT?�����Ӧ���У������������urc��urc�޷�����������δ�������缤��״̬�жϳ�����������
-	(2)net.lua��������û�н����ٽ�С�������»�վ��λ������Բ�ѯʧ�ܡ�������
-
-
-
-����ʱ�䣺2019/07/18 15:19
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.1
-	(1)net.lua������net.setEngMode�ӿڣ��������Ƿ������ٽ�С����Ĭ��������������ʱ�ή������״̬����
-	(2)patch.lua���Ż�uart��i2c��spi���Ͷ���������ǰ���ѣ����ͺ���������
-	(3)net.lua��������float�̼��£��ź�ǿ�Ȳ�Ϊ������Ӱ���վ��λ��������
-
-
-
-����ʱ�䣺2019/06/13 23:21
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.2.0
-	(1)link.lua������setAuthApn�ӿڣ�֧�����ô����ܷ�ʽ��ר��APN
-	(2)errDump.lua���������������־�ϱ�����,�����̼�������Ϣ�ϱ�����
-	(3)ril.lua��֧��AT^��ͷ������
-
-
-
-����ʱ�䣺2019/04/22 14:56
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.9
-	(1)patch.lua��������task���г������û��������Ƿ��������Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿������ģ��
-		���¹���ʹ��˵������main.lua��PROJECT����������������COROUTINE_ERROR_RESTART = true�Ϳ���������������
-		��ע�⡿��������򿪴��������ܣ�һ�������˹��ܣ������Ŀ���Բ���֣����������д��ڡ�����û���task���г����������⣬�ᵼ�·������������п��ܵ���Զ���������жϵ�һϵ������
-	(2)aLiYunOta.lua��֧�ְ�����OTA����
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿������ģ��
-	(3)socket.lua��
-		֧��ͬ���ж�ģʽ�²���������
-		�첽���ͽӿ�֧�ַ��ͳ�ʱ�������첽��������֧��sys.publish("SOCKET_ASYNC_SEND", result)֪ͨ���ͽ��
-	(4)link.lua���Ż�PDP�������缤���Լ�ȥ���������
-
-
-
-
-����ʱ�䣺2019/02/11 16:53
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.8
-	(1)ril.lua��������sim������ϱ���û�б��ű���ȷ�����������޷�������������
-		��������Ҫ�ԡ�����Ҫ
-		��������ָ��ʡ����ͣ�CPIN: READY�������ϱ������������ATӦ���У��Ż���ִ�����
-		������Ӱ��ģ�顿������ģ��
-		����Ҫ˵��:����ǿ�ҽ�����������Ȼ���ʺܵͣ�����һ�����֣��ᵼ���޷�������ֻ�н�������ģʽ���������ſ��ָܻ�
-
-
-
-����ʱ�䣺2019/01/31 14:51
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.7
-	(1)gps.lua��agps.lua������GPS����ģ��
-	(2)socket.lua��connect��send�ӿ���������ʱʧ�ܷ��ء��Ĺ���
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿������ģ��
-		���¹���ʹ��˵�������ο�socketģ���API˵��
-    ����demo�ű��޸�
-	(1)http������baiduʹ�õ�ca��֤���ļ�����ע�⣺4G�ϵĶԷ�����֤�����У�飬Ҫʹ�÷�������֤��ĸ�֤�����У�顿
-
-
-
-����ʱ�䣺2019/01/24 14:59
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.6
-	(1)socket.lua��������ip���类���ر�ʱ��socketû�������رա�������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿������ģ��
-		����Ҫ˵��:����ǿ�ҽ���������������ᵼ��socket task����
-	(2)net.lua��������ע����С���󣬻�վ��λʱ�������Ҳ�����ЧС������λʧ�ܡ�������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿������ģ��
-	(3)console.lua������"TIEMOUTƴд"�Ĵ���
-
-
-
-����ʱ�䣺2019/01/20 12:13
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.5
-	(1)socket.lua������һ���������������������û��ű���ĳ��ʹ�÷�ʽ������һ��forѭ�������쳣
-	(2)sys.lua����������ʱ��ʱ��С��5����ʱ������������������
-    ����demo�ű��޸�
-	(1)crypto������crypto.hmac_sha256��crypto.crc16�Զ������ģ���㷨��ʹ��ʾ��
-
-
-
-����ʱ�䣺2019/01/10 14:56
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.4
-	(1)socket.lua������������socket close֮���������ͬ���ٴ����µ�socket��scoket id���ظ���������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿������ģ��
-		��������ָ��ʡ�������
-		����Ҫ˵��:�����������0014�Լ������汾��core�����ܳ��׽��������
-	(2)socket.lua���������첽socket������Ϣ��socket�ر�ʱ��û�����������Ϣ��������
-	(3)httpv2.lua��֧��typeΪurlencode��ʱ����body
-
-
-
-����ʱ�䣺2018/12/28 16:52
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.3
-	(1)mqtt.lua��������mqtt publish qosΪ2ʱ���ڴ�й©������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿������ģ��
-		��������ָ��ʡ�������
-	(2)sms.lua�������������Զ��Ž����ϱ���ʽ������������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿������ģ��
-		��������ָ��ʡ��������ԣ����0013�Լ��Ժ��core�汾���ܳ��׽��������
-	(3)lbsLoc.lua��������socket����ʧ�ܵĴ���ֵ���ء�����
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿������ģ��
-		���¹���˵��������socket�Ѿ����꣬����socketʧ�ܣ��������﷨�����¹��ܲ��������﷨����ͨ���ص���������һ������ֵ6
-    ����demo�ű��޸�
-	(1)i2c���豸slave addrʹ�÷�7bit��ַ
-
-
-
-����ʱ�䣺2018/12/21 17:23
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.2
-	(1)httpv2.lua��֧��HTTP1.1�ĳ�����
-	(2)utils.lua��urlEncode()�ӿ�֧��utf8�����ַ���������string.utf8Len��string.utf8ToTable�����ӿ�
-    ����demo�ű��޸�
-	(1)adc������adc��demo�����ӵ�ѹʵ��ֵ���������
-	(2)i2c����demo���ܸ���Ϊ����ssd1306��Ļ
-	(3)����socket��mqtt��uart��demoĿ¼
-
-
-
-����ʱ�䣺2018/12/03 13:50
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.1
-	(1)netLed��������netLedģ�鹦��ʧЧ��������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿������ģ��
-		���������ԭ�򡿣�2.1.0��script�Ż���socket���ܣ���ɾ��һ����Ϣ��publish��netLed���õ�����Ϣ�����Թ��ܳ���
-		����������ʽ�����ָ���Ϣ��publish
-
-
-
-����ʱ�䣺2018/12/03 09:00
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.1.0
-	(1)socket.lua,�Ż�socket���ܣ��ӿں�2G��ȫ���ݣ�MQTT�ӿڼ���
-		��������Ҫ�ԡ�����Ҫ 
-		����Ҫ˵��:����2.1.0��ֻ֧��core-V0011���ϰ汾,���ڸð汾������µ�����core�汾��
-	(2)socket.lua��select���֧�ֳ���������������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿������ģ��
-		�����������������asyncSocket��demo
-		����Ϣ�ֶΡ���["SOCKET_SEND", socket.id],["SOCKET_RECV", socket.id]
-
-
-����ʱ�䣺2018/11/28 18:03
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.6
-	(1)socket.lua,�Ż�socket���ܣ��ӿں�2G��ȫ���ݣ�MQTT�ӿڼ���
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�socket�������ְ���������ģ�
-		����������ʽ������дsend��recv����
-	(2)socket.lua������ �첽��ܣ�֧�ַ�����ɻص����յ����ݻص���֧��select���
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿������ģ��
-		�����������������asyncSocket��demo
-		����Ϣ�ֶΡ���["SOCKET_SEND", socket.id],["SOCKET_RECV", socket.id]
-
-
-����ʱ�䣺2018/11/27 11:12
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.5
-	(1)socket.lua,�Ż�socket���ܣ��޸�������socket���������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�socket�������ְ���������ģ�
-		����������ʽ�����Ż������������ʽ
-	(2)socket.lua,���·�װrecv��������select����.send����֧�������̷߳�������,֧�ֻص���������
-	(3)socket.lua����������ִ��:recv������������waitЭ�̣���wait�����У��յ����ݣ��ᵼ�����ݶ�ʧ��������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿������ģ��
-		��������ָ��ʡ�������
-		���������ԭ�򡿣����������ݺ�δ��waitֵ��գ�����δ�����յ������ݴ洢����
-		����������ʽ�����������ݺ�ʱ���waitֵ
-
-����ʱ�䣺2018/11/08 11:12
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.4
-	(1)http.lua��������http://www.host.com/0E:34:56:78:1A:BC/kslfjdls?jkfls=kjkd���͵�url��path�г��֡�:���֡���ʽ������������������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�path�г��֡�:���֡��ĸ�ʽ�����������˶˿�
-		����������ʽ�����Ż������������ʽ
-	(2)clib.lua : uart.on�ķ���������Ӳ���uid
-	(3)httpv2.lua: �������ݵ�body��������³����
-	(4)link.lua��������ִ��shut�ӿں󣬻ᵼ��socket��������isReady�ӿ���ԶΪfalse��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�pdp���¼�����������
-		����������ʽ����������������
-	(5)aLiYun.lua������������������ʱ�����ظ����Ͷ�����Ϣ��������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿������ģ��
-		��������ָ��ʡ�������
-		���������ԭ�򡿣�ÿ��������������һ��������Ϣ
-		����������ʽ��������ǰ��ն�����Ϣ�б�
-
-
-����ʱ�䣺2018/11/06 15:25
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.3
-	(1)link.lua��������pdp����ȥ����֮��û�����¼���pdp��������
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air720��������Ӱ��ϴ�һ�����ֺ������޷��������ݴ��䣬��������
-		��������ָ��ʡ���һ������pdp����ȥ�������
-		���������ԭ�򡿣�ȱ�����¼�����߼�����
-		����������ʽ�����������¼���pdp���߼�����
-	(2)aLiYun.lua���Ż�������������
-		���¹�����Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air720
-		���¹���˵���������ߺ��������һ��ʧ�ܣ��ر�IP���������¼�����IP���ʱʧ�ܣ�ͨ�������˳�����ģʽ���Իָ�
-	(3)http.lua��������socket����ʧ��ʱ��������ű��쳣��û��֪ͨ�û���������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ������ͬʱ����8��socket����socket���������£��������http.request�����ֽű��쳣
-		���������ԭ�򡿣�8��socket�����꣬http.request����socketʧ�ܣ�û���ж�������������ʹ��Ϊnil��socket�����쳣
-		����������ʽ�����жϴ���socket�ӿڵķ���ֵ�����ʧ�ܣ�֪ͨ�û��ص�
-
-
-
-
-����ʱ�䣺2018/09/08 15:48
-�޸ļ�¼��
-   һ��lib�ű��޸�
-	lib�汾�ţ�2.0.2
-	(1)net.lua��csq �� ceng ��ѯ������Ч��bug
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air720
-		������˵��������ѯ������һ��̶���1���Ӳ�ѯ,ȥ����δ��룬Ȼ��ÿ��״̬�������ѯ��
-	(2)sys.lua������waitUntilExt(id,ms) �ӿ�
-		�������������ԡ���sys.waitUntilExt(id,ms)���صĵ�һ��������id������
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ����˽ӿ��������¹�����Ƶģ�Ϊ�˼�����ǰ�����Ĵ������������Ľӿڣ����ú�sys.waitUntil(id,ms)��ͬ������ֵ��ͬ��
-	(3)socket.lua��֧�ַ�����Ϣ�ʹ������ķ�����Ϣ	
-		���¹�����Ҫ�ԡ�: ��Ҫ
-		���¹���˵����  : �˹��ܿ���ʵ��ʵʱ��socket�ӿڣ�֧���������첽IO�ص�
-	(4)mqtt.lua������Զ����������
-		���¹�����Ҫ�ԡ�����Ҫ
-		���¹���˵����  ���˹��ܿ���ʵ��ʵʱ��MQTT�ӿڣ�֧���������첽IO�ص�
-	(5)lbsLoc.lua,net.lua����Ϸ��������4G��վ��λ����ʹrssiȡֵ��0~31֮��
+发布时间：2021/3/3
+修改记录：1.3 3027 底层core固件更新说明
+1.增加蓝牙功能
+2.增加超低功耗功能
+3.SIM卡自动切换
+4.LUA: 增加部分固件的大ram 和大文件系统
+1.2底层core固件更新说明
+0030底层固件更新说明
+1:linux上usb识别完后加载rndis驱动会上不了网
+2:解决挂测过程中ssl死机问题
+3:vbat电压发生变化时，rtos.MSG_PMD消息不会上报
+4:支持DES3加密，解密接口
+5:spi dma模式挂测外部flash，概率读写失败导致lua卡主问题
+6:Luat_0022版本做socket压力测试发现 socketcore.sock_send() 会断开网络
+7:adc open增加scale可选参数，用来增加ADC的精度
+8:启动防抖定时器时，close gpio会导致死机
+9:mount/umount SD卡，3次后必现死机
+10:485存在内存泄漏
+11:修改I2C1和I2C3不能用的问题 2. cid值1,2,3对应硬件i2c1,2,3
+12:sd卡 fat32 format失败
+13:rsa算法内存泄漏问题
+14:在Luat版本上开发“设置mic输入通道”的接口
+15:解决SSL接收数据过程中突然关闭造成死机的问题
+16:增加远程升级lua脚本的校验功能，防止下载错误的脚本导致模块无法开机
+17:修改插卡开机同时使用SD卡和SPI概率性死机问题
+18:修改keypad按键，多个按键同时抬起，丢中断问题
+19:uart.set_rs485_oe添加可选参数,用来配置485转向延迟时间
+20:GPIO配置输入中断后， 设置上下拉会触发中断
+21:解决电池检测电压不准的问题
+22:使用电信卡连接失败问题，改为IPV4优先
+23:充电开机，会上报开机按键消息
+24:解决调用io.opendir()打开目标文件夹，无论是否存在都会返回true的问题
+25:同时配置所有的gpio为上拉中断，部分gpio无法使用问题
+
+0022底层固件更新说明
+1:添加rtos.setTransData
+2:添加Socket Options参数设置接口sock_setopt,lua通过设置opt实现保活功能
+3:添加AT+TCPUSERPARAM
+4:新接口接口lua otp接口
+5:支持关机充电功能 ，lua项目打开充电开机功能
+6:添加des_encrypt和des_decrypt接口
+7:添加AT*USB=HOTPLUG,0/1
+
+0019底层固件更新说明
+1:升级到19
+2:支持应用层更新audio校准参数
+3:开发通用工厂测试
+4:同时建大于3路ssl tcp时会死机
+5:升级到W20.30.1
+6:多中断设置后触发中断会导致死机
+7:vbus插入消息上报
+8:耳机通道等级3的音量不正常
+9:8910平台LUA版本增加读取客户版本号的AT指令，兼容之前1802平台的“AT+LUAINFO?”
+10:NAT PPP拨号之后无法PING外网
+11:添加GPIO 测试AT 命令
+12:阿里云OTA升级失败
+13:重启开机原因值不对的问题
+14:解决speex流播放出现的死机问题
+15:修改注网太快，lua task还没跑起来的时候就已经注册上网，会有很多主动上报丢掉的问题
+16:ui字库错位，显示出来的文字不正确
+17:ui分辨率设置为320会重启
+18:添加camera 预览放缩和反转接口
+19:使用充电头供电，1s刷新界面，一段时间后不刷新了
+20:mqtt 挂测死机
+21:1. 添加VGA拍照功能，不支持VGA扫码
+22:无法dhcp 获取IP 问题
+23:添加disp.camerawritereg，设置camera sensor的寄存器
+24:模块下载断电变砖
+25:camera 户外拍照很白的问题
+26:添加nv项，控制usbrst中的延时时间，AT*USB=RSTDELAY,xxx
+27:有些主控开机太慢导致识别不到模块的usb
+28:V0018 wifi扫描得到的ap mac地址有的丢了0
+29:fota升级后,升级文件没有清除，导致文件系统空间变少
+30:修改反复open / close uart会内存泄漏的问题
+31:修改注网太快，lua task还没跑起来的时候就已经注册上网，会有很多主动上报丢掉的问题
+
+
+
+发布时间：2021/1/20
+修改记录：
+	一、core V3025版本修改记录：
+		1、增加远程升级lua脚本的校验功能，防止下载错误的脚本导致模块无法开机
+		2、解决sd卡与SPI同时使用概率性死机问题
+		3、修改蓝牙MAC地址显示与调试软件不符的问题
+		4、配置GPIO29,30,31会导致模块死机
+		5、修改sim卡热插拔接口无效问题
+		6、Lua_V3024版本录音demo无法使用
+		7、蓝牙从模式开启广播后修改广播内容，重新打开广播，蓝牙调试软件会获取到重复服务和特征描述
+		8、优化流播放部分MP3音频数据阻塞问题
+		9，蓝牙广播进入休眠后停止
+		10、修改keypad按键，多个按键同时抬起，丢中断问题
+		11、AT+RNDISCALL=0,1后重新插拔USB，rndis可以重新上网
+		12、uart.set_rs485_oe添加可选参数,用来配置485转向延迟时间
+		13、电池检测电压不准问题
+		14、支持充电开机
+		15、通话过程播放TTS，通话结束TTS结束不了
+		16、修改fs的io接口返回值类型错误问题
+		17、sd卡 fat32 format失败
+	二、lib 修改记录：
+		1、aLiYun：mqtt直连方式，增加获取username和password的函数设置功能
+		2、aLiYun：系统sleep的时候不触发异常超时
+		3、sys：当一个task中使用waitUntil循环订阅不同的消息，例如waitUntil("1",500)、waitUntil("2",500)、...、waitUntil("n",500)，无论是否产生订阅的消息，都会产生内存泄漏的问题
+		4、mqtt：修正“subscribe订阅，服务器返回失败时，代码逻辑无法检测失败”的问题
+		5、aLiYun：支持最新的阿里云公共实例和企业版示例的MQTT直连
+		6、audio：增加设置mic增益的接口 
+		7、audio：修改设置音频输出通道的接口，增加了音频输入通道 
+		8、audio：设置默认音频输入输出通道
+		9、gpsZkw：修改gpsZkw.lua的log.info，将gps改为gpsZkw
+		10、path：修正spi.send_recv接口功能出错的问题
+发布时间：2020/12/28
+修改记录：
+	一、core V3024版本修改记录：
+		1，修改rtos.tick获取系统tick接口,修改前关机tick不会清零，现在改成关机后清0
+		2，修改关机后再开机系统时间不对问题
+		3，修改pmd.init初始化后，充电功能为使能，导致获取电压信息不准问题
+		4，修改SD mount/umount，3次后必现死机
+		5，修改sd卡 format失败问题
+		6，优化adc.open接口，增加scale可选参数，用来增加ADC的精度
+		7，增加I2C1和I2C3的支持
+		8，增加DES3加密接口crypto.des3_encrypt，解密接口crypto.des3_decrypt
+		9，增加Luat_V30XX_RDA8910_BT_FLOAT蓝牙版本支持sd卡
+发布时间：2020/11/23
+修改记录：
+	一、core V24版本修改记录：
+		1,优化网络问题
+		2，支持DES3加密，解密接口
+		3，spi dma模式挂测外部flash，概率读写失败导致lua卡主问题
+		4，linux上usb识别完后加载rndis驱动会上不了网
+		5，解决挂测过程中ssl死机问题
+		6，vbat电压发生变化时，rtos.MSG_PMD消息不会上报
+		7，在CEREG=2，并且开启工程模式下，大于1047之后的版本改为只有status发生改变才会上报，小区变化不再上报，与AT手册不符
+		8，通过pmd.ldoset接口设置背光，通过pmd.LDO_VBACKLIGHT_R，pmd.LDO_VBACKLIGHT_G,pmd.LDO_VBACKLIGHT_B设置背光
+		9，添加Socket Options参数设置接口sock_setopt,lua通过设置opt实现保活功能
+		10，扩展rtos.poweroff(type)接口增加type参数，传1进入关机充电状态
+		11，添加des_encrypt和des_decrypt接口
+		12，添加AT*USB=HOTPLUG,0/1
+		13，当ssl服务器主动断开会导致死锁
+	二、lib修改记录：
+		1、增加audio.setChannel(0)
+		2、修正新版本luatools加密导致nvm运行异常的问题
+
+发布时间：2020/09/23
+修改记录：
+	一、core V21版本修改记录：
+		1，485发送1200波特率下最后一字节错误
+		2，disp.getframe()接口只能获取到图片的缓存，文字信息的缓存获取不到
+		3，概率性lua虚拟机异常
+		4，mono_std_spi_st7571.lua 无法正常使用
+		5，拍照死机
+		6，低功耗下用串口2打印日志有不完整
+		7，温湿度传感器sht30，在开发板上工作不正常
+		8，disp.close() 之后再执行disp.init 无提示直接重启
+		9，支持通过模数和指数的rsa加解密功能接口
+		lua添加耳机热插拔接口
+	二、lib修改记录：
+		1、增加audio.setChannel(0)
+		2、修正新版本luatools加密导致nvm运行异常的问题
+
+发布时间：2020/09/05
+修改记录：
+	一、core V20版本修改记录：
+		1、TTS/TTS_FLOAT版本支持SD卡
+		2、支持在lvgl里显示二维码，支持设置style，支持canvas控件
+		3、lua开发820GPS供电引脚设置
+		4、disp显示bug
+		5、TTS支持英文字母播报
+		6、添加audiocore.head_plug接口，配置耳机插拔状态
+		7、添加disp.new disp.getframe接口
+		8、SSL连接过程中，播放TTS卡顿
+	二、lib修改记录：
+		1、增加littlevgl demo
+		2、优化lib库的部分bug
+
+发布时间：2020/05/31 10:10
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.3.2
+	(1)scanCode：支持摄像头拍照和扫码功能
+	(2)record：支持流式录音功能
+	(3)wifiScan：支持wifi热点扫描功能
+	(4)audio：支持通话音量调节功能
+	(5)http：修正“transfer-encoding区分大小写导致的chunk编码数据无法正常解析”的问题
+    二、demo脚本修改
+	(1)完善或者支持camera、record、wifi、audio、call demo
+
+
+
+发布时间：2020/05/04 22:48
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.3.1
+	(1)audio.lua：修正“TTS速度设置错误”的问题
+	(2)record.lua：新增录音功能
+    二、demo脚本修改
+	(1)alarm：新增闹钟demo
+	(2)record：新增录音demo
+
+
+
+发布时间：2020/04/23 15:03
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.3.0
+	(1)audio.lua：新增audio.setChannel接口，可以设置音频输出通道
+
+
+
+发布时间：2020/04/11 23:43
+修改记录：
+	lib脚本版本号：2.2.9
+	(1)支持tts、call功能
+	(2)添加GPIO ldo电压域的控制说明
+	(3)修改开发板默认netLed的控制方式，ldo电压域的控制放到main.lua去控制，不再写在netLed.lua中去控制
+
+
+
+发布时间：2020/04/09 23:37
+修改记录：
+	lib脚本版本号：2.2.8
+	(1)支持ui、audio、qrcode功能
+	(2)修正“部分sim卡无法触发上网逻辑”的问题
+	(3)修正“网络指示灯不亮”的问题
+
+
+
+发布时间：2019/11/17 08:16
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.7
+	(1)mqtt.lua：修正“mqtt recv阻塞接收时，如果允许消息退出阻塞状态，会导致publish阻塞等待puback时，退出阻塞状态，导致publish出错”的问题【阿里云也存在此问题】
+	(2)link.lua：修正“2G专网卡，pdp激活失败”的问题
+
+
+
+发布时间：2019/10/29 10:25
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.6
+	(1)socket.lua：修正“socket被动关闭时，如果有另外一个socket创建，概率性导致这两个socket id冲突，从而导致socket协程异常假死”的问题
+
+
+
+发布时间：2019/10/22 16:02
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.5
+	(1)link.lua：修正“专网卡设置apn后，无法注册网络”的问题
+	(2)socket.lua：修正“同时存在多个socket域名连接失败，使用http dns功能时，会导致概率重启”的问题
+
+
+
+发布时间：2019/10/09 16:02
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.4
+	(1)socket.lua：修正“腾讯免费http dns功能失败”的问题
+
+
+
+发布时间：2019/10/08 16:40
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.3
+	(1)link.lua：优化专网卡apn设置功能
+	(2)link.lua：修正“开机后第一次连接服务器，概率性出现连接失败”的问题
+	(3)socket.lua：支持腾讯免费http dns功能
+
+
+
+发布时间：2019/09/04 16:17
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.2
+	(1)ril.lua、link.lua：修正“AT+CGDCONT?命令的应答中，如果混入其他urc，urc无法被处理，从未导致网络激活状态判断出错”的问题
+	(2)net.lua：修正“没有解析临近小区，导致基站定位会概率性查询失败”的问题
+
+
+
+发布时间：2019/07/18 15:19
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.1
+	(1)net.lua：新增net.setEngMode接口，可设置是否搜索临近小区，默认搜索，不搜索时会降低休眠状态功耗
+	(2)patch.lua：优化uart、i2c、spi发送动作，发送前唤醒，发送后允许休眠
+	(3)net.lua：修正“float固件下，信号强度不为整数，影响基站定位”的问题
+
+
+
+发布时间：2019/06/13 23:21
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.2.0
+	(1)link.lua：新增setAuthApn接口，支持设置带加密方式的专网APN
+	(2)errDump.lua：新增网络错误日志上报功能,新增固件死机信息上报功能
+	(3)ril.lua：支持AT^开头的命令
+
+
+
+发布时间：2019/04/22 14:56
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.9
+	(1)patch.lua：新增“task运行出错，用户可配置是否重启”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：所有模块
+		【新功能使用说明】：main.lua中PROJECT变量附近新增变量COROUTINE_ERROR_RESTART = true就可以启用重启功能
+		【注意】：请谨慎打开此重启功能，一旦开启此功能，如果项目测试不充分，量产软件中存在“开机没多久task运行出错”的问题，会导致反复重启，还有可能导致远程升级被中断等一系列问题
+	(2)aLiYunOta.lua：支持阿里云OTA功能
+		【新功能重要性】：一般
+		【新功能影响模块】：所有模块
+	(3)socket.lua：
+		支持同步中断模式下不发心跳包
+		异步发送接口支持发送超时参数；异步发送数据支持sys.publish("SOCKET_ASYNC_SEND", result)通知发送结果
+	(4)link.lua：优化PDP数据网络激活以及去激活的流程
+
+
+
+
+发布时间：2019/02/11 16:53
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.8
+	(1)ril.lua：修正“sim卡检测上报，没有被脚本正确处理，导致无法上网”的问题
+		【问题重要性】：重要
+		【问题出现概率】：低，CPIN: READY的主动上报混合在其他的AT应答中，才会出现此问题
+		【问题影响模块】：所有模块
+		【重要说明:】：强烈建议升级，虽然概率很低，但是一旦出现，会导致无法上网，只有进出飞行模式或者重启才可能恢复
+
+
+
+发布时间：2019/01/31 14:51
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.7
+	(1)gps.lua、agps.lua：新增GPS功能模块
+	(2)socket.lua：connect和send接口新增“超时失败返回”的功能
+		【新功能重要性】：一般
+		【新功能影响模块】：所有模块
+		【新功能使用说明】：参考socket模块的API说明
+    二、demo脚本修改
+	(1)http：更换baidu使用的ca根证书文件；【注意：4G上的对服务器证书进行校验，要使用服务器端证书的根证书进行校验】
+
+
+
+发布时间：2019/01/24 14:59
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.6
+	(1)socket.lua：修正“ip网络被动关闭时，socket没有正常关闭”的问题
+		【问题重要性】：重要
+		【问题影响模块】：所有模块
+		【重要说明:】：强烈建议升级，此问题会导致socket task阻塞
+	(2)net.lua：修正“注册上小区后，基站定位时概率性找不到有效小区，定位失败”的问题
+		【问题重要性】：一般
+		【问题影响模块】：所有模块
+	(3)console.lua：修正"TIEMOUT拼写"的错误
+
+
+
+发布时间：2019/01/20 12:13
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.5
+	(1)socket.lua：修正一处代码隐患，可能由于用户脚本的某种使用方式，导致一处for循环运行异常
+	(2)sys.lua：修正“定时器时间小于5毫秒时，运行重启”的问题
+    二、demo脚本修改
+	(1)crypto：新增crypto.hmac_sha256和crypto.crc16自定义参数模型算法的使用示例
+
+
+
+发布时间：2019/01/10 14:56
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.4
+	(1)socket.lua：修正“调用socket close之后，如果马上同步再创建新的socket，scoket id会重复”的问题
+		【问题重要性】：重要
+		【问题影响模块】：所有模块
+		【问题出现概率】：极低
+		【重要说明:】：必须配合0014以及后续版本的core，才能彻底解决此问题
+	(2)socket.lua：修正“异步socket订阅消息在socket关闭时，没有清除订阅消息”的问题
+	(3)httpv2.lua：支持type为urlencode的时候发送body
+
+
+
+发布时间：2018/12/28 16:52
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.3
+	(1)mqtt.lua：修正“mqtt publish qos为2时的内存泄漏”问题
+		【问题重要性】：重要
+		【问题影响模块】：所有模块
+		【问题出现概率】：必现
+	(2)sms.lua：修正“概率性短信接收上报格式出错”的问题
+		【问题重要性】：重要
+		【问题影响模块】：所有模块
+		【问题出现概率】：概率性，配合0013以及以后的core版本才能彻底解决此问题
+	(3)lbsLoc.lua：新增“socket创建失败的错误值返回”功能
+		【新功能重要性】：一般
+		【新功能影响模块】：所有模块
+		【新功能说明】：当socket已经用完，创建socket失败，会引起语法错误；新功能不再引起语法错误，通过回调函数传出一个错误值6
+    二、demo脚本修改
+	(1)i2c：设备slave addr使用方7bit地址
+
+
+
+发布时间：2018/12/21 17:23
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.2
+	(1)httpv2.lua：支持HTTP1.1的长连接
+	(2)utils.lua：urlEncode()接口支持utf8中文字符串；新增string.utf8Len和string.utf8ToTable两个接口
+    二、demo脚本修改
+	(1)adc：完善adc的demo，增加电压实际值计算的描述
+	(2)i2c：将demo功能更改为驱动ssd1306屏幕
+	(3)整理socket、mqtt、uart的demo目录
+
+
+
+发布时间：2018/12/03 13:50
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.1
+	(1)netLed：修正“netLed模块功能失效”的问题
+		【问题重要性】：一般
+		【问题影响模块】：所有模块
+		【问题出现原因】：2.1.0的script优化了socket性能，误删了一个消息的publish，netLed会用到此消息，所以功能出错
+		【问题解决方式】：恢复消息的publish
+
+
+
+发布时间：2018/12/03 09:00
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.1.0
+	(1)socket.lua,优化socket性能，接口和2G完全兼容，MQTT接口兼容
+		【问题重要性】：重要 
+		【重要说明:】：2.1.0库只支持core-V0011以上版本,低于该版本的请更新到最新core版本。
+	(2)socket.lua：select框架支持长连接心跳包参数
+		【功能重要性】：重要
+		【功能影响模块】：所有模块
+		【功能描述】：详见asyncSocket的demo
+		【消息字段】：["SOCKET_SEND", socket.id],["SOCKET_RECV", socket.id]
+
+
+发布时间：2018/11/28 18:03
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.6
+	(1)socket.lua,优化socket性能，接口和2G完全兼容，MQTT接口兼容
+		【问题重要性】：重要
+		【问题影响模块】：Air720
+		【问题出现概率】：必现
+		【问题出现原因】：socket的慢发分包机制引起的，
+		【问题解决方式】：重写send和recv方法
+	(2)socket.lua：新增 异步框架，支持发送完成回调和收到数据回调，支持select框架
+		【功能重要性】：重要
+		【功能影响模块】：所有模块
+		【功能描述】：详见asyncSocket的demo
+		【消息字段】：["SOCKET_SEND", socket.id],["SOCKET_RECV", socket.id]
+
+
+发布时间：2018/11/27 11:12
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.5
+	(1)socket.lua,优化socket性能，修复大数据socket丢包的情况
+		【问题重要性】：重要
+		【问题影响模块】：Air720
+		【问题出现概率】：必现
+		【问题出现原因】：socket的慢发分包机制引起的，
+		【问题解决方式】：优化解析正则表达式
+	(2)socket.lua,重新封装recv方法增加select特性.send方法支持其他线程发送数据,支持回调发送数据
+	(3)socket.lua：修正“在执行:recv方法后，如果如果wait协程，在wait过程中，收到数据，会导致数据丢失”的问题
+		【问题重要性】：一般
+		【问题影响模块】：所有模块
+		【问题出现概率】：必现
+		【问题出现原因】：接受完数据后未将wait值清空，导致未将接收到的数据存储下来
+		【问题解决方式】：接收数据后及时清空wait值
+
+发布时间：2018/11/08 11:12
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.4
+	(1)http.lua：修正“http://www.host.com/0E:34:56:78:1A:BC/kslfjdls?jkfls=kjkd类型的url（path中出现“:数字”格式）解析出错”的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air720
+		【问题出现概率】：必现
+		【问题出现原因】：path中出现“:数字”的格式，被解析成了端口
+		【问题解决方式】：优化解析正则表达式
+	(2)clib.lua : uart.on的发送完成增加参数uid
+	(3)httpv2.lua: 返回数据的body计算增加鲁棒性
+	(4)link.lua：修正“执行shut接口后，会导致socket阻塞或者isReady接口永远为false”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air720
+		【问题出现概率】：必现
+		【问题出现原因】：pdp重新激活流程有误
+		【问题解决方式】：调整激活流程
+	(5)aLiYun.lua：修正“阿里云重连时，会重复发送订阅消息”的问题
+		【问题重要性】：一般
+		【问题影响模块】：所有模块
+		【问题出现概率】：必现
+		【问题出现原因】：每次重连都会新增一个订阅消息
+		【问题解决方式】：重连前清空订阅消息列表
+
+
+发布时间：2018/11/06 15:25
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.3
+	(1)link.lua：修正“pdp被动去激活之后，没有重新激活pdp”的问题
+		【问题重要性】：重要
+		【问题影响模块】：Air720，此问题影响较大，一旦出现后续将无法进行数据传输，除非重启
+		【问题出现概率】：一旦出现pdp被动去激活，必现
+		【问题出现原因】：缺少重新激活的逻辑处理
+		【问题解决方式】：新增重新激活pdp的逻辑处理
+	(2)aLiYun.lua：优化断线重连机制
+		【新功能重要性】：一般
+		【问题影响模块】：Air720
+		【新功能说明】：断线后，如果重连一次失败，关闭IP环境，重新激活。如果IP激活超时失败，通过进入退出飞行模式尝试恢复
+	(3)http.lua：修正“socket创建失败时，会产生脚本异常，没有通知用户错误”问题
+		【问题重要性】：一般
+		【问题影响模块】：Air720
+		【问题出现概率】：最多同时存在8个socket，在socket用完的情况下，如果调用http.request，必现脚本异常
+		【问题出现原因】：8个socket已用完，http.request创建socket失败，没有判断这个创建结果，使用为nil的socket出现异常
+		【问题解决方式】：判断创建socket接口的返回值，如果失败，通知用户回调
+
+
+
+
+发布时间：2018/09/08 15:48
+修改记录：
+   一、lib脚本修改
+	lib版本号：2.0.2
+	(1)net.lua：csq 和 ceng 查询参数无效的bug
+		【新功能重要性】：一般
+		【新功能影响模块】：Air720
+		【问题说明】：查询代码有一句固定了1分钟查询,去掉这段代码，然后每次状态变更都查询。
+	(2)sys.lua：新增waitUntilExt(id,ms) 接口
+		【新增功能特性】：sys.waitUntilExt(id,ms)返回的第一个参数是id自身。
+		【问题影响模块】：Air720
+		【问题出现概率】：此接口是增加新功能设计的，为了兼容以前发布的代码所以新增的接口，作用和sys.waitUntil(id,ms)相同，返回值不同。
+	(3)socket.lua：支持发布消息和带参数的发布消息	
+		【新功能重要性】: 重要
+		【新功能说明】  : 此功能可以实现实时的socket接口，支持阻塞或异步IO回调
+	(4)mqtt.lua：完善远程升级功能
+		【新功能重要性】：重要
+		【新功能说明】  ：此功能可以实现实时的MQTT接口，支持阻塞或异步IO回调
+	(5)lbsLoc.lua,net.lua：配合服务器完成4G基站定位，并使rssi取值在0~31之间
 	
 
 
 
-����ʱ�䣺2018/08/23 14:22
-�޸ļ�¼��
-    һ��lib�ű��޸�
-	lib�ű��汾�ţ�2.0.1
-	(1)netLed.lua��������Ʊ�������
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air720
-		���¹���˵����������4G������������ò���
-	(2)link.lua���л���2G�����ʱ��ᵼ�¶���������shut�ӿ�
-		��������Ҫ�ԡ�����Ҫ
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ�������2G����ʱ��һֱ�ظ�����PDP
-		����������ʽ�����ַ���ƥ�������ַ���ת���
-	(3)pb.lua�����ӵ绰��������
+发布时间：2018/08/23 14:22
+修改记录：
+    一、lib脚本修改
+	lib脚本版本号：2.0.1
+	(1)netLed.lua：打开网络灯报错问题
+		【新功能重要性】：一般
+		【新功能影响模块】：Air720
+		【新功能说明】：添加4G网络灯引脚设置参数
+	(2)link.lua：切换到2G网络的时候会导致断网，添加shut接口
+		【问题重要性】：重要
+		【问题影响模块】：Air720
+		【问题出现概率】：连接2G网络时，一直重复设置PDP
+		【问题解决方式】：字符串匹配特殊字符加转义符
+	(3)pb.lua：添加电话本管理库
 
-	(4)update.lua������Զ����������
-		���¹�����Ҫ�ԡ���һ��
-		���¹���Ӱ��ģ�顿��Air720
-	(5)misc.lua������sn��ȡ�Ƿ�ֵ������
-		��������Ҫ�ԡ���һ��
-		������Ӱ��ģ�顿��Air720
-		��������ָ��ʡ�������
+	(4)update.lua：完善远程升级功能
+		【新功能重要性】：一般
+		【新功能影响模块】：Air720
+	(5)misc.lua：修正sn获取非法值的问题
+		【问题重要性】：一般
+		【问题影响模块】：Air720
+		【问题出现概率】：极低
