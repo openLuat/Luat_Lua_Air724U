@@ -13,6 +13,11 @@ Air724U Lua语言项目, 源码开放, 自由扩展!! 支持 合宙4G cat.1系�
 ### LittleVGL
 ![](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20200807131012759_lvgl.gif)
 
+### 可选编译
+![操作视图](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20210316115526954_QQ图片20210316115519.png "操作视图")
+[详细说明](http://http://doc.openluat.com/detail_article/50/2716)
+
+
 ## 开发
 
 ### 1. 准备开发工具
