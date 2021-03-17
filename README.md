@@ -6,14 +6,14 @@ Air724U Lua语言项目, 源码开放, 自由扩展!! 支持 合宙4G cat.1系�
 
 
 ## 二、 CORE固件
-CORE固件是C语言编写的Lua虚拟机运行环境，基于官方的Lua5.1版本，增加了大量符合蜂窝通信模组特性的新特性。可以有一下两种方式CORE获取方式：
+CORE固件是C语言编写的Lua虚拟机运行环境，基于官方的Lua5.1版本，增加了大量符合蜂窝通信模组的新特性。CORE固件可以有如下两种获取方式：
 #### 1. 在线定制固件
 
 ![操作视图](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20210316115526954_QQ图片20210316115519.png "操作视图")
 
 [详细说明链接](http://doc.openluat.com/detail_article/50/2716)
 
-#### 2. 官方定制固件
+#### 2. 官方发布固件
 
 ![](http://openluat-luatcommunity.oss-cn-hangzhou.aliyuncs.com/images/20201212174959751_QQ%E5%9B%BE%E7%89%8720201212174707.png "lua.png")
 
