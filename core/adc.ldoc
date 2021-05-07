@@ -1,0 +1,89 @@
+模板：
+/*
+@module  模块的调用名
+@summary 模块的简短描述信息
+@version 版本号，可选
+@data    日期，可选
+*/
+
+/*
+@function module.function(调用时用到的完整函数名)
+@string 第一个参数，@后跟参数类型，空格后跟参数解释
+@number[opt=nil] 第二个参数，默认值为nil
+@table[opt={}] 第三个参数，默认值为{}
+...根据实际，列出所有参数
+@return 类型 返回的第一个值，这里是解释
+@return string 返回的第二个值，类型为string
+...根据实际，列处所有返回值
+@usage
+--使用的例子，可多行
+lcoal a,b,c = module.function("test",nil,{1,2,3})
+*/
+static int l_module_function(lua_State *L) {
+    //一堆代码
+}
+*/
+
+示例：
+/*
+ @module    adc
+ @summary 
+ @version     
+ @data         2020年08月03日
+ */
+
+
+/*
+ @api/function adc.open(id,scale)	
+ @number,id,需要打开的adc的通道id
+ @number, scale,设置adc检测的范围
+ @table[opt={}] {}
+ ...id,scale
+ @return 	number, result, 返回ADC打开的结果
+ @return  string，nil
+ ...result
+ @usage
+--使用的例子，可多行
+local id=2  
+local result=adc.open(id)  
+if result==1 then  
+    log.info("adc",id,"打开成功！");  
+end
+*/
+
+
+/*
+ @api/function adc.read(id)
+ @number,id,需要读取的adc的通道id
+ @number[opt=nil] nil
+ @table[opt={}]        {}
+...id
+ @return    number，adcval，adc的原始值
+ @return    number，voltval，转换后的电压值，单位为毫伏
+...adcval，voltval
+ @usage
+--使用的例子，可多行
+local id=2  
+local adcval, voltval=adc.read(id)  
+if adcval~=0xffff then  
+    log.info("ADC的原始测量数据和电压值:", adcval, voltval)  
+end  
+*/
+
+/*
+ @api/function adc.close(Id)
+ @ number,id,需要读取的adc的通道id
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...id
+ @return 	number, result, 返回ADC关闭的结果
+...result
+@usage
+--使用的例子，可多行
+local id=2  
+local result=adc.close(id)  
+if result==1 then  
+    log.info("adc",id,"关闭成功！");  
+end  
+*/
+

@@ -1,0 +1,263 @@
+模板：
+/*
+@module  模块的调用名
+@summary 模块的简短描述信息
+@version 版本号，可选
+@data    日期，可选
+*/
+
+/*
+@function module.function(调用时用到的完整函数名)
+@string 第一个参数，@后跟参数类型，空格后跟参数解释
+@number[opt=nil] 第二个参数，默认值为nil
+@table[opt={}] 第三个参数，默认值为{}
+...根据实际，列出所有参数
+@return 类型 返回的第一个值，这里是解释
+@return string 返回的第二个值，类型为string
+...根据实际，列处所有返回值
+@usage
+--使用的例子，可多行
+lcoal a,b,c = module.function("test",nil,{1,2,3})
+*/
+static int l_module_function(lua_State *L) {
+    //一堆代码
+}
+*/
+
+示例：
+/*
+ @module    audiocore
+ @summary 
+ @version     
+ @data         2020年08月03日
+ */
+
+
+/*
+ @api/function audiocore.play(audioFilePath)	
+ @string,audioFilePath,音频文件的完整路径
+ @number[opt=nil] nil
+ @table[opt={}] {}
+ ...audioFilePath
+ @return 	bool, result,返回同步播放结果
+ ...result
+ @usage
+--使用的例子，可多行
+local function audioMsg(msg)  
+    log.info("audio.MSG_AUDIO",msg.play_end_ind)  
+    sys.publish("LIB_AUDIO_PLAY_IND","RESULT",msg.play_end_ind)  
+end  
+--注册core上报的rtos.MSG_AUDIO消息的处理函数  
+rtos.on(rtos.MSG_AUDIO,audioMsg)  
+audiocore.play("/lua/call.mp3")  
+*/
+
+
+/*
+ @api/function audiocore.playdata(audioData,audioFormat[,audioLoop])
+ @string,audioData,音频数据内容
+ @number，audioFormat，音频数据格式
+ @bool，audioLoop，是否循环播放    可选参数，默认不循环
+...audioData,audioFormat,audioLoop
+ @return    bool，result，返回同步播放结果
+...result
+ @usage
+--使用的例子，可多行
+local function audioMsg(msg)  
+    log.info("audio.MSG_AUDIO",msg.play_end_ind)  
+    sys.publish("LIB_AUDIO_PLAY_IND","RESULT",msg.play_end_ind)  
+end  
+--注册core上报的rtos.MSG_AUDIO消息的处理函数  
+rtos.on(rtos.MSG_AUDIO,audioMsg)  
+audiocore.play(io.readFile("/lua/call.mp3"),audiocore.MP3)  
+*/
+
+/*
+ @api/function audiocore.streamplay(audioFormat,audioData)
+ @number,audioFormat,音频数据格式
+ @string，audioData，音频数据内容
+ @table[opt={}]  {}
+...audioFormat,audioData
+ @return 	number, acceptedAudioDataLen, 接受的音频数据长度
+...acceptedAudioDataLen
+@usage
+--使用的例子，可多行
+local tBuffer = {}  
+local tStreamType  
+
+local function consumer()  
+    sys.taskInit(function()  
+        audio.setVolume(7)  
+        while true do  
+            while #tBuffer==0 do  
+                sys.waitUntil("DATA_STREAM_IND")  
+            end  
+            local data = table.remove(tBuffer,1)  
+            --log.info("testAudioStream.consumer remove",data:len())  
+            local procLen = audiocore.streamplay(tStreamType,data)  
+            if procLen<data:len() then  
+                --log.warn("produce fast")  
+                table.insert(tBuffer,1,data:sub(procLen+1,-1))  
+                sys.wait(5)  
+            end  
+        end  
+    end)  
+end  
+
+local function producer(streamType)  
+    sys.taskInit(function()  
+        while true do  
+            tStreamType = streamType  
+            local tAudioFile =  
+            {  
+                [audiocore.AMR] = "tip.amr",  
+                [audiocore.SPX] = "record.spx",  
+                [audiocore.PCM] = "alarm_door.pcm",  
+            }  
+            local fileHandle = io.open("/lua/"..tAudioFile[streamType],"rb")  
+            if not fileHandle then  
+                log.error("testAudioStream.producer open file error")  
+                return  
+            end  
+            while true do  
+                local data = fileHandle:read(streamType==audiocore.SPX and 1200 or 1024)  
+                if not data then fileHandle:close() return end  
+                table.insert(tBuffer,data)  
+                if #tBuffer==1 then sys.publish("DATA_STREAM_IND") end  
+                --log.info("testAudioStream.producer",data:len())  
+                sys.wait(10)  
+            end   
+        end  
+    end)  
+end  
+
+sys.timerStart(function()  
+    --producer(audiocore.AMR)  
+    --producer(audiocore.SPX)  
+    producer(audiocore.PCM)  
+    consumer()  
+end,3000)  
+*/
+
+*
+ @api/function audiocore.streamremain()	
+ @number[opt=nil] nil
+ @table[opt={}]        {}
+ @return 	number, remainLen, 缓冲区剩余未播放的音频流字节数
+ ...remainLen
+ @usage
+--使用的例子，可多行
+sys.taskInit(function()  
+    sys.wait(5000)  
+    local audioData = io.readFile("/lua/tip.amr")  
+    --此处audiocore.streamremain()返回0  
+    log.info("begin streamremain",audiocore.streamremain())  
+    audiocore.streamplay(audiocore.AMR,audioData:sub(1,2000))  
+    --此处audiocore.streamremain()返回值不定，和core中rtos系统调度有关  
+    log.info("after streamplay 2000, streamremain",audiocore.streamremain())  
+    sys.wait(2000)  
+    --此处audiocore.streamremain()返回0  
+    log.info("play done, streamremain",audiocore.streamremain())  
+end)  
+*/
+
+
+/*
+ @api/function audiocore.setpa(audioClass)
+ @number,audioClass,音频功放类型
+ @number[opt=nil] nil
+ @table[opt={}]        {}
+...audioClass
+...
+ @usage
+--使用的例子，可多行 
+*/
+
+/*
+ @api/function audiocore.getpa()
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...
+ @return 	number, audioClass, 音频功放类型
+...audioClass
+@usage
+--使用的例子，可多行
+*/
+
+/*
+ @api/function audiocore.pa(gpio,devout,[plus_count],[plus_period])
+ @number,gpio,gpio id
+ @number,devout,音频输出通道
+ @number,plus_count,输出波形个数，默认为3个   可选参数
+ @number,plus_period,输出波形的时间单位us，默认为2us   可选参数
+...gpio,devout,[plus_count],[plus_period]
+
+...
+@usage
+--使用的例子，可多行
+*/
+
+/*
+ @api/function audiocore.headsetinit(auto)
+ @number,auto,控制模式
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...auto
+
+...
+@usage
+--使用的例子，可多行
+local function headsetCB(msg)  
+    --log.info("audio.MSG_AUDIO",msg.type,msg.param)  
+end  
+--注册core上报的rtos.MSG_AUDIO消息的处理函数  
+rtos.on(rtos.MSG_HEADSET,headsetCB)  
+audiocore.headsetinit(0) 
+*/
+
+/*
+ @api/function audiocore.head_plug(type)
+ @number,type,耳机动作
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...type
+
+...
+@usage
+--使用的例子，可多行
+*/
+
+
+/*
+ @api/function audiocore.rtmpopen(url)
+ @string,url,rtmp流的url地址
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...url
+
+...
+@usage
+--使用的例子，可多行
+*/
+
+/*
+ @api/function audiocore.rtmpclose()
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...
+
+...
+@usage
+--使用的例子，可多行
+*/
+
+/*
+ @api/function audiocore.stop()
+ @number[opt=nil]  nil
+ @table[opt={}]  {}
+...
+
+...
+@usage
+--使用的例子，可多行
+*/
